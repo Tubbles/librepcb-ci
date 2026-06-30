@@ -1,0 +1,137 @@
+name: LibrePCB CI
+description: Run a LibrePCB project output jobs in CI and publish browsable outputs to GitHub Pages.
+author: Tubbles
+branding:
+  icon: cpu
+  color: green
+
+inputs:
+  projects:
+    description: Newline- or comma-separated list of LibrePCB project paths (.lpp dirs or .lppz files), relative to the repo root.
+    required: true
+  librepcb-version:
+    description: LibrePCB version (official Docker image tag / AppImage version). The official image has no "latest" tag, so this is pinned.
+    required: false
+    default: "2.1.1"
+  install-method:
+    description: 'How to obtain librepcb-cli: "docker" (default), "appimage", or "custom" (you install it yourself and set cli-command).'
+    required: false
+    default: docker
+  cli-command:
+    description: Command used to run librepcb-cli when install-method is "custom" (for an apt/snap/source install you set up in a prior step).
+    required: false
+    default: librepcb-cli
+  image:
+    description: Docker image repository for librepcb-cli (docker install method).
+    required: false
+    default: librepcb/librepcb-cli
+  run-checks:
+    description: Run ERC and DRC.
+    required: false
+    default: "true"
+  checks-fatal:
+    description: Fail the build when ERC/DRC report non-approved messages. Set false for warn-only.
+    required: false
+    default: "true"
+  use-preview-jobs:
+    description: Run a supplementary pass with the bundled preview jobs (board/schematic images, interactive BOM, STEP) so projects without preview jobs still get previews.
+    required: false
+    default: "false"
+  preview-jobs-file:
+    description: Path to a custom jobs .lp file to use instead of the bundled preview jobs (only when use-preview-jobs is true).
+    required: false
+    default: ""
+  boards:
+    description: Newline/comma list of board names to build (default, empty, builds all boards).
+    required: false
+    default: ""
+  variants:
+    description: Newline/comma list of assembly variants to build (default, empty, builds the project default).
+    required: false
+    default: ""
+  output-dir:
+    description: Directory, relative to the repo, where outputs are collected.
+    required: false
+    default: librepcb-ci-output
+  artifact-name:
+    description: Name of the uploaded workflow artifact. Empty disables artifact upload.
+    required: false
+    default: librepcb-ci-outputs
+  pages:
+    description: Publish outputs to GitHub Pages (per-branch, with a branch selector).
+    required: false
+    default: "false"
+  pages-branch:
+    description: Branch to publish the Pages site to.
+    required: false
+    default: gh-pages
+  github-token:
+    description: Token used to publish to the Pages branch.
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  output-dir:
+    description: Directory containing the collected outputs.
+    value: ${{ steps.run.outputs.output-dir }}
+  pages-url:
+    description: URL of the published Pages site for this branch (when pages is enabled).
+    value: ${{ steps.assemble.outputs.pages-url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Run LibrePCB output jobs
+      id: run
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/dist/cli.cjs" run
+      env:
+        LIBREPCB_CI_PROJECTS: ${{ inputs.projects }}
+        LIBREPCB_CI_VERSION: ${{ inputs.librepcb-version }}
+        LIBREPCB_CI_INSTALL_METHOD: ${{ inputs.install-method }}
+        LIBREPCB_CI_CLI_COMMAND: ${{ inputs.cli-command }}
+        LIBREPCB_CI_IMAGE: ${{ inputs.image }}
+        LIBREPCB_CI_RUN_CHECKS: ${{ inputs.run-checks }}
+        LIBREPCB_CI_CHECKS_FATAL: ${{ inputs.checks-fatal }}
+        LIBREPCB_CI_USE_PREVIEW_JOBS: ${{ inputs.use-preview-jobs }}
+        LIBREPCB_CI_PREVIEW_JOBS_FILE: ${{ inputs.preview-jobs-file }}
+        LIBREPCB_CI_BOARDS: ${{ inputs.boards }}
+        LIBREPCB_CI_VARIANTS: ${{ inputs.variants }}
+        LIBREPCB_CI_OUTPUT_DIR: ${{ inputs.output-dir }}
+
+    - name: Upload outputs artifact
+      if: ${{ always() && inputs.artifact-name != '' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.output-dir }}
+        if-no-files-found: ignore
+
+    - name: Checkout existing Pages branch
+      if: ${{ inputs.pages == 'true' }}
+      uses: actions/checkout@v4
+      continue-on-error: true
+      with:
+        ref: ${{ inputs.pages-branch }}
+        path: .librepcb-ci-pages
+        fetch-depth: 0
+        token: ${{ inputs.github-token }}
+
+    - name: Assemble Pages tree
+      id: assemble
+      if: ${{ inputs.pages == 'true' }}
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/dist/cli.cjs" assemble-pages
+      env:
+        LIBREPCB_CI_OUTPUT_DIR: ${{ inputs.output-dir }}
+        LIBREPCB_CI_PAGES_DIR: .librepcb-ci-pages
+        LIBREPCB_CI_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+
+    - name: Publish to GitHub Pages
+      if: ${{ inputs.pages == 'true' }}
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ inputs.github-token }}
+        publish_branch: ${{ inputs.pages-branch }}
+        publish_dir: .librepcb-ci-pages
+        keep_files: false

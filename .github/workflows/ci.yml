@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Build & test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Lint
+        run: npx eslint .
+      - name: Test
+        run: npx vitest run
+      - name: Verify committed bundles are up to date
+        run: git diff --exit-code -- dist pages/app.js
+      - name: actionlint
+        run: |
+          bash <(curl -sSf https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          ./actionlint -color
+
+  e2e:
+    name: Run on demo project
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    # Serialize Pages publishes so concurrent branch builds do not race on the
+    # gh-pages branch.
+    concurrency:
+      group: librepcb-ci-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run librepcb-ci on the demo project
+        id: librepcb
+        uses: ./
+        with:
+          projects: demo
+          librepcb-version: "2.1.1"
+          run-checks: true
+          # The demo is a third-party test project; do not fail the demo build on
+          # its ERC/DRC messages.
+          checks-fatal: false
+          # Publish only on push (pull requests, including forks, lack a write token).
+          pages: ${{ github.event_name == 'push' }}
+      - name: Assert outputs were produced
+        run: |
+          set -euo pipefail
+          dir="${{ steps.librepcb.outputs.output-dir }}"
+          test -f "$dir/demo/manifest.json"
+          test -f "$dir/demo/demo.zip"
+          test -f "$dir/projects.json"
+          echo "Outputs present in $dir:"
+          ls -R "$dir" | head -80

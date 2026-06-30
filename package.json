@@ -1,0 +1,35 @@
+{
+  "name": "librepcb-ci",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Run a LibrePCB project's output jobs in CI and publish browsable outputs to GitHub Pages",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "check-dist": "node scripts/build.mjs && git diff --exit-code -- dist pages/app.js"
+  },
+  "devDependencies": {
+    "@types/archiver": "^8.0.0",
+    "@types/node": "^26.0.1",
+    "@vitest/coverage-v8": "^4.1.9",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.6.0",
+    "jsdom": "^29.1.1",
+    "online-3d-viewer": "^0.18.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.62.1",
+    "vitest": "^4.1.9"
+  },
+  "dependencies": {
+    "@actions/core": "^3.0.1",
+    "archiver": "^8.0.0"
+  }
+}
