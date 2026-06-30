@@ -49,6 +49,7 @@ describe('cli run (no docker)', () => {
       { mode: 0o755 },
     )
     fs.mkdirSync(path.join(ws, 'demo'))
+    fs.writeFileSync(path.join(ws, 'demo', 'project.lpp'), 'LIBREPCB-PROJECT')
 
     const result = spawnSync('node', [cli, 'run'], {
       cwd: ws,
@@ -88,6 +89,7 @@ describe('cli run (no docker)', () => {
     const failingCli = path.join(ws, 'fail.sh')
     fs.writeFileSync(failingCli, '#!/usr/bin/env bash\nexit 3\n', { mode: 0o755 })
     fs.mkdirSync(path.join(ws, 'demo'))
+    fs.writeFileSync(path.join(ws, 'demo', 'project.lpp'), 'LIBREPCB-PROJECT')
 
     const result = spawnSync('node', [cli, 'run'], {
       cwd: ws,

@@ -36578,6 +36578,23 @@ function boolEnv(name) {
 function listEnv(name) {
   return env(name).split(/[\n,]/).map((entry) => entry.trim()).filter((entry) => entry.length > 0);
 }
+function resolveProjectFile(workspace, project) {
+  if (/\.(lpp|lppz)$/i.test(project)) return project;
+  const dir = path2.resolve(workspace, project);
+  let entries = [];
+  try {
+    entries = fs4.readdirSync(dir);
+  } catch {
+    throw new Error(`Project path '${project}' does not exist.`);
+  }
+  const projectFile = entries.find((entry) => entry.toLowerCase().endsWith(".lpp"));
+  if (!projectFile) {
+    throw new Error(
+      `No .lpp file found in '${project}'. Point the projects input at the directory containing a *.lpp file, or at the .lpp/.lppz file directly.`
+    );
+  }
+  return path2.posix.join(project, projectFile);
+}
 async function listFiles(dir) {
   const files = [];
   async function walk(current) {
@@ -36686,8 +36703,16 @@ async function run() {
     const projectOutRel = path2.posix.join(outputRoot, id);
     const projectOutAbs = path2.resolve(workspace, outputRoot, id);
     await fsp.mkdir(projectOutAbs, { recursive: true });
+    let projectFile;
+    try {
+      projectFile = resolveProjectFile(workspace, project);
+    } catch (error2) {
+      error(error2 instanceof Error ? error2.message : String(error2));
+      failed = true;
+      continue;
+    }
     const invocations = planInvocations({
-      project,
+      project: projectFile,
       outdir: projectOutRel,
       runChecks,
       checksFatal,

@@ -35,6 +35,29 @@ function listEnv(name: string): string[] {
     .filter((entry) => entry.length > 0)
 }
 
+/**
+ * Resolve a project input to the path librepcb-cli expects. `open-project`
+ * requires the `.lpp`/`.lppz` project file, not the containing directory, so a
+ * directory input is resolved to the single `.lpp` file it contains.
+ */
+function resolveProjectFile(workspace: string, project: string): string {
+  if (/\.(lpp|lppz)$/i.test(project)) return project
+  const dir = path.resolve(workspace, project)
+  let entries: string[] = []
+  try {
+    entries = fs.readdirSync(dir)
+  } catch {
+    throw new Error(`Project path '${project}' does not exist.`)
+  }
+  const projectFile = entries.find((entry) => entry.toLowerCase().endsWith('.lpp'))
+  if (!projectFile) {
+    throw new Error(
+      `No .lpp file found in '${project}'. Point the projects input at the directory containing a *.lpp file, or at the .lpp/.lppz file directly.`,
+    )
+  }
+  return path.posix.join(project, projectFile)
+}
+
 interface CollectedFile {
   /** Path relative to the project's output dir, POSIX separators. */
   rel: string
@@ -180,8 +203,17 @@ async function run(): Promise<void> {
     const projectOutAbs = path.resolve(workspace, outputRoot, id)
     await fsp.mkdir(projectOutAbs, { recursive: true })
 
+    let projectFile: string
+    try {
+      projectFile = resolveProjectFile(workspace, project)
+    } catch (error) {
+      core.error(error instanceof Error ? error.message : String(error))
+      failed = true
+      continue
+    }
+
     const invocations = planInvocations({
-      project,
+      project: projectFile,
       outdir: projectOutRel,
       runChecks,
       checksFatal,

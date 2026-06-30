@@ -46,16 +46,6 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
-      - name: Debug workspace mount
-        run: |
-          img=librepcb/librepcb-cli:2.1.1
-          docker pull -q "$img"
-          echo "=== A: project file path (demo/project.lpp) ==="
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work "$img" open-project --erc demo/project.lpp 2>&1 | tail -6 || true
-          echo "=== B: cwd=demo, arg=project.lpp ==="
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work/demo "$img" open-project --erc project.lpp 2>&1 | tail -6 || true
-          echo "=== C: cwd=demo, arg=. ==="
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work/demo "$img" open-project --erc . 2>&1 | tail -6 || true
       - name: Run librepcb-ci on the demo project
         id: librepcb
         uses: ./
