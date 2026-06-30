@@ -1,0 +1,6 @@
+Project: test_project
+Version: v1
+
+This file is produced by the LibrePCB "copy" output job, demonstrating the
+substitute_variables feature. It exists so the demo project can exercise every
+output job type end to end in CI.
