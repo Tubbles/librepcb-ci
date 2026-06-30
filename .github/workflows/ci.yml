@@ -50,14 +50,12 @@ jobs:
         run: |
           img=librepcb/librepcb-cli:2.1.1
           docker pull -q "$img"
-          echo "=== T1: uid1001 sh can stat demo? ==="
-          docker run --rm --user 1001:1001 -v "$GITHUB_WORKSPACE:/work" -w /work --entrypoint /bin/sh "$img" -c 'id; stat /work/demo >/dev/null 2>&1 && echo CAN_STAT || echo CANNOT_STAT' || true
-          echo "=== T2: uid1001 default entrypoint (repro) ==="
-          docker run --rm --user 1001:1001 -v "$GITHUB_WORKSPACE:/work" -w /work "$img" open-project --erc demo 2>&1 | tail -4 || true
-          echo "=== T3: uid1001 + HOME=/tmp ==="
-          docker run --rm --user 1001:1001 -e HOME=/tmp -v "$GITHUB_WORKSPACE:/work" -w /work "$img" open-project --erc demo 2>&1 | tail -4 || true
-          echo "=== T4: root default entrypoint ==="
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work "$img" open-project --erc demo 2>&1 | tail -4 || true
+          echo "=== A: project file path (demo/project.lpp) ==="
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work "$img" open-project --erc demo/project.lpp 2>&1 | tail -6 || true
+          echo "=== B: cwd=demo, arg=project.lpp ==="
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work/demo "$img" open-project --erc project.lpp 2>&1 | tail -6 || true
+          echo "=== C: cwd=demo, arg=. ==="
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work/demo "$img" open-project --erc . 2>&1 | tail -6 || true
       - name: Run librepcb-ci on the demo project
         id: librepcb
         uses: ./
