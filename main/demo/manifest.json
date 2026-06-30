@@ -4,18 +4,13 @@
   "source": "demo",
   "files": [
     {
-      "path": ".librepcb-output",
-      "size": 2010,
-      "category": "other"
-    },
-    {
       "path": "asm/test_project_v1_BOM_AV.csv",
       "size": 162,
       "category": "bom"
     },
     {
       "path": "asm/test_project_v1_BOM_AV.html",
-      "size": 303339,
+      "size": 303351,
       "category": "interactive-bom"
     },
     {
@@ -120,7 +115,7 @@
     },
     {
       "path": "test_project_v1_Schematic.pdf",
-      "size": 119134,
+      "size": 119150,
       "category": "pdf"
     },
     {
@@ -145,10 +140,10 @@
     },
     {
       "path": "test_project_v1.zip",
-      "size": 213647,
+      "size": 213663,
       "category": "archive"
     }
   ],
   "zip": "demo.zip",
-  "generatedAt": "2026-06-30T21:16:53.854Z"
+  "generatedAt": "2026-06-30T21:19:46.570Z"
 }
