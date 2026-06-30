@@ -66,4 +66,4 @@ jobs:
           test -f "$dir/demo/demo.zip"
           test -f "$dir/projects.json"
           echo "Outputs present in $dir:"
-          ls -R "$dir" | head -80
+          find "$dir" -type f | sort | head -80
