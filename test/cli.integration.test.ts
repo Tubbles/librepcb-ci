@@ -84,6 +84,36 @@ describe('cli run (no docker)', () => {
     expect(projects.projects[0]?.id).toBe('demo')
   })
 
+  it('names a root (.) project after the repository', () => {
+    const ws = workspace()
+    const okCli = path.join(ws, 'ok.sh')
+    fs.writeFileSync(okCli, '#!/usr/bin/env bash\nexit 0\n', { mode: 0o755 })
+    fs.writeFileSync(path.join(ws, 'myboard.lpp'), 'LIBREPCB-PROJECT')
+
+    const result = spawnSync('node', [cli, 'run'], {
+      cwd: ws,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        GITHUB_WORKSPACE: ws,
+        GITHUB_ACTION_PATH: repoRoot,
+        GITHUB_OUTPUT: path.join(ws, 'gh_output'),
+        GITHUB_REPOSITORY: 'someone/cool-board',
+        LIBREPCB_CI_PROJECTS: '.',
+        LIBREPCB_CI_INSTALL_METHOD: 'custom',
+        LIBREPCB_CI_CLI_COMMAND: okCli,
+        LIBREPCB_CI_RUN_CHECKS: 'false',
+        LIBREPCB_CI_OUTPUT_DIR: 'out',
+      },
+    })
+    expect(result.status, result.stdout + result.stderr).toBe(0)
+    const manifest = JSON.parse(
+      fs.readFileSync(path.join(ws, 'out', 'cool-board', 'manifest.json'), 'utf8'),
+    ) as ProjectManifest
+    expect(manifest.id).toBe('cool-board')
+    expect(manifest.name).toBe('cool-board')
+  })
+
   it('fails the run when a fatal job invocation fails', () => {
     const ws = workspace()
     const failingCli = path.join(ws, 'fail.sh')

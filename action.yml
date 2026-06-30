@@ -7,8 +7,9 @@ branding:
 
 inputs:
   projects:
-    description: Newline- or comma-separated list of LibrePCB project paths (.lpp dirs or .lppz files), relative to the repo root.
-    required: true
+    description: Newline- or comma-separated list of LibrePCB project paths (.lpp dirs or .lppz files), relative to the repo root. Defaults to "." for a single project at the repo root.
+    required: false
+    default: "."
   librepcb-version:
     description: LibrePCB version (official Docker image tag / AppImage version). The official image has no "latest" tag, so this is pinned.
     required: false

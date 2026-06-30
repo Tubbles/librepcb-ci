@@ -36578,6 +36578,14 @@ function boolEnv(name) {
 function listEnv(name) {
   return env(name).split(/[\n,]/).map((entry) => entry.trim()).filter((entry) => entry.length > 0);
 }
+function identifyProject(project, repoName) {
+  const trimmed = project.replace(/\/+$/, "");
+  if (trimmed === "." || trimmed === "") {
+    const base = repoName || "project";
+    return { id: sanitizeRefName(base), name: base };
+  }
+  return projectIdentity(project);
+}
 function resolveProjectFile(workspace, project) {
   if (/\.(lpp|lppz)$/i.test(project)) return project;
   const dir = path2.resolve(workspace, project);
@@ -36685,6 +36693,7 @@ async function run() {
   const variants = listEnv("LIBREPCB_CI_VARIANTS");
   const outputRoot = env("LIBREPCB_CI_OUTPUT_DIR", "librepcb-ci-output");
   const actionPath = env("GITHUB_ACTION_PATH", process.cwd());
+  const repoName = env("GITHUB_REPOSITORY").split("/")[1] ?? "";
   const uid = typeof process.getuid === "function" ? process.getuid() : void 0;
   const gid = typeof process.getgid === "function" ? process.getgid() : void 0;
   const absOutputRoot = path2.resolve(workspace, outputRoot);
@@ -36700,7 +36709,7 @@ async function run() {
   const built = [];
   let failed = false;
   for (const project of projects) {
-    const { id, name } = projectIdentity(project);
+    const { id, name } = identifyProject(project, repoName);
     const projectOutRel = path2.posix.join(outputRoot, id);
     const projectOutAbs = path2.resolve(workspace, outputRoot, id);
     await fsp.mkdir(projectOutAbs, { recursive: true });

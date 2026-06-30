@@ -37,6 +37,8 @@ jobs:
           pages: true               # publish a browsable Pages site
 ```
 
+If your `.lpp` lives at the repo root, you can drop the `projects` line entirely; it defaults to `.` and the project is named after the repository.
+
 Then enable GitHub Pages for the repository (Settings, Pages) with the source set to the `gh-pages` branch. Your outputs will be browsable at `https://<owner>.github.io/<repo>/`.
 
 A live demo built from this repository's own [`demo/`](demo/) project is at https://tubbles.github.io/librepcb-ci/.
@@ -47,7 +49,7 @@ If you only want ERC/DRC checks and no published outputs, you do not need this a
 
 | Input | Default | Description |
 | --- | --- | --- |
-| `projects` | (required) | Newline- or comma-separated list of project paths (`.lpp` directories or `.lppz` files), relative to the repo root. |
+| `projects` | `.` | Newline- or comma-separated list of project paths (`.lpp` directories or `.lppz` files), relative to the repo root. Defaults to `.` for a single project at the repo root. |
 | `librepcb-version` | `2.1.1` | LibrePCB version (Docker image tag / AppImage version). The official image has no `latest` tag, so this is pinned. |
 | `install-method` | `docker` | How to obtain `librepcb-cli`: `docker`, `appimage`, or `custom`. |
 | `cli-command` | `librepcb-cli` | Command to run when `install-method` is `custom` (for an apt/snap/source install you set up yourself). |

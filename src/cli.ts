@@ -36,6 +36,19 @@ function listEnv(name: string): string[] {
 }
 
 /**
+ * Derive a project's id/name. For a root input (".", the repo itself), there is
+ * no directory name to use, so fall back to the repository name.
+ */
+function identifyProject(project: string, repoName: string): { id: string; name: string } {
+  const trimmed = project.replace(/\/+$/, '')
+  if (trimmed === '.' || trimmed === '') {
+    const base = repoName || 'project'
+    return { id: sanitizeRefName(base), name: base }
+  }
+  return projectIdentity(project)
+}
+
+/**
  * Resolve a project input to the path librepcb-cli expects. `open-project`
  * requires the `.lpp`/`.lppz` project file, not the containing directory, so a
  * directory input is resolved to the single `.lpp` file it contains.
@@ -179,6 +192,7 @@ async function run(): Promise<void> {
   const outputRoot = env('LIBREPCB_CI_OUTPUT_DIR', 'librepcb-ci-output')
   const actionPath = env('GITHUB_ACTION_PATH', process.cwd())
 
+  const repoName = env('GITHUB_REPOSITORY').split('/')[1] ?? ''
   const uid = typeof process.getuid === 'function' ? process.getuid() : undefined
   const gid = typeof process.getgid === 'function' ? process.getgid() : undefined
 
@@ -201,7 +215,7 @@ async function run(): Promise<void> {
   let failed = false
 
   for (const project of projects) {
-    const { id, name } = projectIdentity(project)
+    const { id, name } = identifyProject(project, repoName)
     const projectOutRel = path.posix.join(outputRoot, id)
     const projectOutAbs = path.resolve(workspace, outputRoot, id)
     await fsp.mkdir(projectOutAbs, { recursive: true })
