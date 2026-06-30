@@ -48,11 +48,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Debug workspace mount
         run: |
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE PWD=$(pwd) UID=$(id -u)"
-          ls -la
-          test -d demo && echo "host: demo exists" || echo "host: demo MISSING"
-          echo "--- container view (same mount) ---"
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work --entrypoint /bin/sh librepcb/librepcb-cli:2.1.1 -c 'id; ls -la /work | head -30; echo "--- /work/demo ---"; ls -la /work/demo 2>&1 | head'
+          img=librepcb/librepcb-cli:2.1.1
+          docker pull -q "$img"
+          echo "=== T1: uid1001 sh can stat demo? ==="
+          docker run --rm --user 1001:1001 -v "$GITHUB_WORKSPACE:/work" -w /work --entrypoint /bin/sh "$img" -c 'id; stat /work/demo >/dev/null 2>&1 && echo CAN_STAT || echo CANNOT_STAT' || true
+          echo "=== T2: uid1001 default entrypoint (repro) ==="
+          docker run --rm --user 1001:1001 -v "$GITHUB_WORKSPACE:/work" -w /work "$img" open-project --erc demo 2>&1 | tail -4 || true
+          echo "=== T3: uid1001 + HOME=/tmp ==="
+          docker run --rm --user 1001:1001 -e HOME=/tmp -v "$GITHUB_WORKSPACE:/work" -w /work "$img" open-project --erc demo 2>&1 | tail -4 || true
+          echo "=== T4: root default entrypoint ==="
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work "$img" open-project --erc demo 2>&1 | tail -4 || true
       - name: Run librepcb-ci on the demo project
         id: librepcb
         uses: ./
