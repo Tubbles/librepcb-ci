@@ -10,7 +10,7 @@
     },
     {
       "path": "asm/test_project_v1_BOM_AV.html",
-      "size": 303351,
+      "size": 303490,
       "category": "interactive-bom"
     },
     {
@@ -115,7 +115,7 @@
     },
     {
       "path": "test_project_v1_Schematic.pdf",
-      "size": 119150,
+      "size": 119118,
       "category": "pdf"
     },
     {
@@ -140,10 +140,10 @@
     },
     {
       "path": "test_project_v1.zip",
-      "size": 213663,
+      "size": 213645,
       "category": "archive"
     }
   ],
   "zip": "demo.zip",
-  "generatedAt": "2026-06-30T21:19:46.570Z"
+  "generatedAt": "2026-06-30T21:44:08.069Z"
 }
