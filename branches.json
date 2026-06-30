@@ -3,10 +3,12 @@
     {
       "dir": "main",
       "ref": "main"
+    },
+    {
+      "dir": "v1.0.1",
+      "ref": "v1.0.1"
     }
   ],
-  "removed": [
-    "v1.0.0"
-  ],
+  "removed": [],
   "defaultBranch": "main"
 }

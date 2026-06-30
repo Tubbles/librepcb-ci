@@ -1,0 +1,95 @@
+{
+    "format": {
+        "major": 1,
+        "minor": 0,
+        "type": "librepcb-project"
+    },
+    "project": {
+        "author": "LibrePCB",
+        "boards": [
+            {
+                "bounding_box": {
+                    "height": 111.99012,
+                    "width": 152.858382,
+                    "x": -56.896058,
+                    "y": -2.99012
+                },
+                "directory": "default",
+                "inner_layers": 0,
+                "min_copper_width": 0.2,
+                "name": "default",
+                "npth_drills": {
+                    "count": 8,
+                    "diameters": [
+                        1,
+                        2,
+                        3
+                    ]
+                },
+                "npth_slots": {
+                    "count": 9,
+                    "diameters": [
+                        1.6
+                    ]
+                },
+                "pcb_thickness": 1.6,
+                "plated_cutouts": 2,
+                "pth_drills": {
+                    "count": 9,
+                    "diameters": [
+                        0.4,
+                        0.8
+                    ]
+                },
+                "pth_slots": {
+                    "count": 5,
+                    "diameters": [
+                        0.6,
+                        0.7,
+                        0.8
+                    ]
+                },
+                "silkscreen_bottom": "white",
+                "silkscreen_top": "white",
+                "solder_resist": "green",
+                "uuid": "7c04f9d5-7366-4c4b-9e17-852ed57b3966",
+                "vias_blind": {
+                    "count": 0,
+                    "diameters": [
+                    ]
+                },
+                "vias_buried": {
+                    "count": 0,
+                    "diameters": [
+                    ]
+                },
+                "vias_tht": {
+                    "count": 12,
+                    "diameters": [
+                        0.3,
+                        0.4,
+                        0.99,
+                        1
+                    ]
+                }
+            }
+        ],
+        "created": "2018-05-05T10:58:49Z",
+        "filename": "project.lpp",
+        "locales": [
+            "en_US"
+        ],
+        "name": "test_project",
+        "norms": [
+        ],
+        "uuid": "34ce99d2-d946-43c5-a01b-80a9f9463716",
+        "variants": [
+            {
+                "description": "",
+                "name": "AV",
+                "uuid": "34ce99d2-d946-43c5-a01b-80a9f9463716"
+            }
+        ],
+        "version": "v1"
+    }
+}

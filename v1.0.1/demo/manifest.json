@@ -1,0 +1,149 @@
+{
+  "id": "demo",
+  "name": "demo",
+  "source": "demo",
+  "files": [
+    {
+      "path": "asm/test_project_v1_BOM_AV.csv",
+      "size": 162,
+      "category": "bom"
+    },
+    {
+      "path": "asm/test_project_v1_BOM_AV.html",
+      "size": 303491,
+      "category": "interactive-bom"
+    },
+    {
+      "path": "asm/test_project_v1_GLUE_AV_BOT.gbr",
+      "size": 631,
+      "category": "gerber"
+    },
+    {
+      "path": "asm/test_project_v1_GLUE_AV_TOP.gbr",
+      "size": 631,
+      "category": "gerber"
+    },
+    {
+      "path": "asm/test_project_v1_PnP_AV_BOT.csv",
+      "size": 721,
+      "category": "pnp"
+    },
+    {
+      "path": "asm/test_project_v1_PnP_AV_BOT.gbr",
+      "size": 2026,
+      "category": "gerber"
+    },
+    {
+      "path": "asm/test_project_v1_PnP_AV_TOP.csv",
+      "size": 732,
+      "category": "pnp"
+    },
+    {
+      "path": "asm/test_project_v1_PnP_AV_TOP.gbr",
+      "size": 2060,
+      "category": "gerber"
+    },
+    {
+      "path": "gbr/test_project_v1_COPPER-BOTTOM.gbr",
+      "size": 98535,
+      "category": "gerber"
+    },
+    {
+      "path": "gbr/test_project_v1_COPPER-TOP.gbr",
+      "size": 141535,
+      "category": "gerber"
+    },
+    {
+      "path": "gbr/test_project_v1_DRILLS-NPTH.drl",
+      "size": 1399,
+      "category": "drill"
+    },
+    {
+      "path": "gbr/test_project_v1_DRILLS-PTH.drl",
+      "size": 1359,
+      "category": "drill"
+    },
+    {
+      "path": "gbr/test_project_v1_OUTLINES.gbr",
+      "size": 1748,
+      "category": "gerber"
+    },
+    {
+      "path": "gbr/test_project_v1_SILKSCREEN-BOTTOM.gbr",
+      "size": 9469,
+      "category": "gerber"
+    },
+    {
+      "path": "gbr/test_project_v1_SILKSCREEN-TOP.gbr",
+      "size": 9570,
+      "category": "gerber"
+    },
+    {
+      "path": "gbr/test_project_v1_SOLDERMASK-BOTTOM.gbr",
+      "size": 8298,
+      "category": "gerber"
+    },
+    {
+      "path": "gbr/test_project_v1_SOLDERMASK-TOP.gbr",
+      "size": 8218,
+      "category": "gerber"
+    },
+    {
+      "path": "gbr/test_project_v1_SOLDERPASTE-BOTTOM.gbr",
+      "size": 1511,
+      "category": "gerber"
+    },
+    {
+      "path": "gbr/test_project_v1_SOLDERPASTE-TOP.gbr",
+      "size": 1158,
+      "category": "gerber"
+    },
+    {
+      "path": "test_project_v1_Assembly.pdf",
+      "size": 89038,
+      "category": "pdf"
+    },
+    {
+      "path": "test_project_v1_Netlist.d356",
+      "size": 3186,
+      "category": "netlist"
+    },
+    {
+      "path": "test_project_v1_Rendering.pdf",
+      "size": 203444,
+      "category": "pdf"
+    },
+    {
+      "path": "test_project_v1_Schematic.pdf",
+      "size": 119117,
+      "category": "pdf"
+    },
+    {
+      "path": "test_project_v1.json",
+      "size": 2646,
+      "category": "other"
+    },
+    {
+      "path": "test_project_v1.lppz",
+      "size": 91611,
+      "category": "archive"
+    },
+    {
+      "path": "test_project_v1.step",
+      "size": 783906,
+      "category": "step"
+    },
+    {
+      "path": "test_project_v1.txt",
+      "size": 223,
+      "category": "other"
+    },
+    {
+      "path": "test_project_v1.zip",
+      "size": 213645,
+      "category": "archive"
+    }
+  ],
+  "zip": "demo.zip",
+  "generatedAt": "2026-06-30T21:45:22.056Z"
+}
