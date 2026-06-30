@@ -1,0 +1,10 @@
+{
+  "projects": [
+    {
+      "id": "demo",
+      "name": "demo",
+      "source": "demo"
+    }
+  ],
+  "generatedAt": "2026-06-30T21:21:26.444Z"
+}
