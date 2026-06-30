@@ -36600,6 +36600,7 @@ async function listFiles(dir) {
   async function walk(current) {
     const entries = await fsp.readdir(current, { withFileTypes: true });
     for (const entry of entries) {
+      if (entry.name.startsWith(".")) continue;
       const full = path2.join(current, entry.name);
       if (entry.isDirectory()) {
         await walk(full);

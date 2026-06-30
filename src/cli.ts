@@ -70,6 +70,9 @@ async function listFiles(dir: string): Promise<CollectedFile[]> {
   async function walk(current: string): Promise<void> {
     const entries = await fsp.readdir(current, { withFileTypes: true })
     for (const entry of entries) {
+      // Skip internal markers and hidden files (e.g. LibrePCB's .librepcb-output);
+      // they are not deliverables and only clutter the preview listing.
+      if (entry.name.startsWith('.')) continue
       const full = path.join(current, entry.name)
       if (entry.isDirectory()) {
         await walk(full)
