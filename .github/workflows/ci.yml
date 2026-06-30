@@ -46,6 +46,13 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+      - name: Debug workspace mount
+        run: |
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE PWD=$(pwd) UID=$(id -u)"
+          ls -la
+          test -d demo && echo "host: demo exists" || echo "host: demo MISSING"
+          echo "--- container view (same mount) ---"
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" -w /work --entrypoint /bin/sh librepcb/librepcb-cli:2.1.1 -c 'id; ls -la /work | head -30; echo "--- /work/demo ---"; ls -la /work/demo 2>&1 | head'
       - name: Run librepcb-ci on the demo project
         id: librepcb
         uses: ./
